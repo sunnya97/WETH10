@@ -11,10 +11,10 @@ contract TestWETH10 {
     uint public initialBalance = 10 ether;
 
     WETH10 weth = WETH10(DeployedAddresses.WETH10());
-    ERC223Compliant erc223Receiver = new ERC223Receiver();
+    ERC223Receiver erc223Receiver = new ERC223Receiver();
     PayableReceiver payableReceiver = new PayableReceiver();
 
-    function testInitialDeposit() {
+    function testInitialDeposit() public {
         uint myInitialWethBalance = weth.balanceOf(this);
         uint myInitialEthBalance = this.balance;
 
@@ -26,29 +26,36 @@ contract TestWETH10 {
         Assert.equal(this.balance, myInitialEthBalance - amount, "This contract should have less ETH now");
     }
 
-    function testERC223Transfer() {
-        uint myInitialWethBalance = weth.balanceOf(this);
-        uint receiverInitialWethBalance = weth.balanceOf(erc223Receiver);
-
+    function testERC223Transfer() public {
         bytes memory empty;
 
+        uint myInitialWethBalance = weth.balanceOf(this);
+        uint receiverInitialWethBalance = weth.balanceOf(erc223Receiver);
         uint amount = 1000;
-
-        if (erc223Receiver.call(0xc0ee0b8a, this, amount, empty)) {
-            return false;
-        }
-
-
-        // if (!erc223Receiver.call(bytes4(keccak256("tokenFallback(address,uint256,bytes)")), this, amount, empty)) {
-        //     return false;
-        // }
-
-
        
         weth.transfer(erc223Receiver, amount);
 
         Assert.equal(weth.balanceOf(this), myInitialWethBalance - amount, "This contract should have less WETH now");
         Assert.equal(weth.balanceOf(erc223Receiver), receiverInitialWethBalance + amount, "The receiver should have more WETH now");
+    }
+
+
+    function testPayableTransfer() {
+        bytes memory empty;
+        
+        uint myInitialWethBalance = weth.balanceOf(this);
+        uint receiverInitialWethBalance = weth.balanceOf(payableReceiver);
+        uint receiverInitialEthBalance = payableReceiver.balance;
+        uint amount = 1000;
+
+        Assert.equal(payableReceiver.call(0xc0ee0b8a, weth.toBytes(this), amount, empty), false, "asdf");
+
+
+        weth.transfer(payableReceiver, amount);
+
+        Assert.equal(weth.balanceOf(this), myInitialWethBalance - amount, "This contract should have less WETH now");
+        Assert.equal(payableReceiver.balance, receiverInitialEthBalance + amount, "The receiver should have more ETH now");
+        Assert.equal(weth.balanceOf(payableReceiver), receiverInitialWethBalance, "The receivers WETH balance should not have changed");
     }
 }
 
@@ -56,10 +63,9 @@ contract ERC223Receiver is ERC223Compliant {
 
     event Received(address indexed from, uint256 value);
 
-    function ERC223Receiver() public {}
-
     function tokenFallback(address from, uint256 value, bytes /* _data */) public {
-        Received(from, value);
+        // Received(from, value);
+        return;
     }
 
 }
@@ -72,5 +78,16 @@ contract PayableReceiver {
     function () payable {
         Received(msg.sender, msg.value);
     }
+}
+
+contract UnpayableReceiver {
+
+    uint256 x;
+  
+    event Received(address indexed from, uint256 value);
+
+    // function () payable {
+    //     x = msg.value;
+    // }
 }
 

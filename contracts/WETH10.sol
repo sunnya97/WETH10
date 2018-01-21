@@ -3,7 +3,7 @@ pragma solidity ^0.4.17;
 import "./ERC223Token.sol";
 import "./SafeMath.sol";
 
-contract WETH10 is ERC223Token {
+contract WETH10 is ERC223Token{
 
     using SafeMath for uint256;
 
@@ -57,7 +57,7 @@ contract WETH10 is ERC223Token {
 
         if(isContract(dst)) {
             // 0xc0ee0b8a == bytes4(keccak256("tokenFallback(address,uint256,bytes)"))
-            if (dst.call(0xc0ee0b8a, src, wad, data)) {
+            if (dst.call(0xc0ee0b8a, toBytes(src), wad, data)) {
                 balanceOf[src] = balanceOf[src].safeSub(wad);
                 balanceOf[dst] = balanceOf[dst].safeAdd(wad);
             } else {
@@ -98,4 +98,36 @@ contract WETH10 is ERC223Token {
         }
         return (length>0);
     }
+
+    function toBytes(address a) constant returns (bytes32 b){
+       assembly {
+            let m := mload(0x40)
+            mstore(add(m, 20), xor(0x140000000000000000000000000000000000000000, a))
+            mstore(0x40, add(m, 52))
+            b := m
+       }
+    }
+
+    // Idk why, but for some reason to getter generation of public variables isn't working.
+
+    function name() public view returns(string) {
+        return name;
+    }
+
+    function symbol() public view returns(string) {
+        return symbol;
+    }
+
+    function decimals() public view returns(uint8) {
+        return 18;
+    }
+
+    function balanceOf(address addr) public view returns (uint256 _balance) {
+        return balanceOf[addr];
+    }
+
+    function allowance(address owner, address spender) public view returns (uint256) {
+        return allowance[owner][spender];
+    }
+
 }

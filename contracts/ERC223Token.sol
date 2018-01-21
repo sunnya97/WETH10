@@ -1,6 +1,6 @@
 pragma solidity ^0.4.17;
 
-interface ERC223Token {
+contract ERC223Token {
 
     function name() public view returns (string _name);
     function symbol() public view returns (string _symbol);

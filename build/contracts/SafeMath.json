@@ -330,7 +330,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 611,
+                                  "referencedDeclaration": 663,
                                   "type": "function () pure",
                                   "value": "revert"
                                 },
@@ -612,7 +612,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 611,
+                                  "referencedDeclaration": 663,
                                   "type": "function () pure",
                                   "value": "revert"
                                 },
@@ -1016,7 +1016,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 611,
+                                  "referencedDeclaration": 663,
                                   "type": "function () pure",
                                   "value": "revert"
                                 },
@@ -1123,5 +1123,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-19T23:37:31.182Z"
+  "updatedAt": "2018-01-20T07:04:46.170Z"
 }
