@@ -48,7 +48,7 @@ contract TestWETH10 {
         uint receiverInitialEthBalance = payableReceiver.balance;
         uint amount = 1000;
 
-        Assert.equal(payableReceiver.call(0xc0ee0b8a, weth.toBytes(this), amount, empty), false, "asdf");
+        Assert.equal(payableReceiver.call(0xc0ee0b8a, weth.toBytes(this), amount, empty), false, "This should be false");
 
 
         weth.transfer(payableReceiver, amount);
